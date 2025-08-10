@@ -2,6 +2,7 @@ export interface User {
   id: number;
   name: string;
   email: string;
+  role?: string; // Added role field for admin functionality
 }
 
 export interface LoginRequest {

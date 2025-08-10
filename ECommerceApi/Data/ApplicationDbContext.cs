@@ -76,6 +76,19 @@ public class ApplicationDbContext : DbContext
     
     private void SeedData(ModelBuilder modelBuilder)
     {
+        // Seed Admin User
+        modelBuilder.Entity<User>().HasData(
+            new User
+            {
+                Id = 1,
+                Name = "Admin User",
+                Email = "admin@example.com",
+                PasswordHash = Convert.ToBase64String(System.Security.Cryptography.SHA256.HashData(System.Text.Encoding.UTF8.GetBytes("admin123SaltValue"))), // password: admin123
+                Role = "admin",
+                CreatedAt = DateTime.UtcNow
+            }
+        );
+        
         // Seed Products
         modelBuilder.Entity<Product>().HasData(
             new Product

@@ -50,6 +50,22 @@ export class ProductService {
     return this.http.post<Product>(this.API_URL, product);
   }
 
+  createProductWithFile(product: any, file: File): Observable<Product> {
+    const formData = new FormData();
+    formData.append('name', product.name);
+    formData.append('description', product.description);
+    formData.append('price', product.price.toString());
+    formData.append('stockQuantity', product.stockQuantity.toString());
+    formData.append('category', product.category);
+    formData.append('image', file);
+    
+    return this.http.post<Product>(`${this.API_URL}/upload`, formData).pipe(
+      tap(response => console.log('ProductService: Product created with file:', response)),
+      timeout(30000), // 30 second timeout for file upload
+      catchError(this.handleError)
+    );
+  }
+
   updateProduct(id: number, product: Partial<CreateProduct>): Observable<Product> {
     return this.http.put<Product>(`${this.API_URL}/${id}`, product);
   }

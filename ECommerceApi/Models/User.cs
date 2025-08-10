@@ -18,6 +18,9 @@ public class User
     [Required]
     public string PasswordHash { get; set; } = string.Empty;
     
+    [StringLength(50)]
+    public string Role { get; set; } = "user"; // Default role is "user", admin role is "admin"
+    
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     
     // Navigation properties

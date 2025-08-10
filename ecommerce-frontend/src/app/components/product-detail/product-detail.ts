@@ -84,4 +84,23 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
   goBack(): void {
     this.router.navigate(['/products']);
   }
+
+  getImageUrl(imageUrl: string): string {
+    if (!imageUrl) {
+      return 'https://via.placeholder.com/600x400?text=No+Image';
+    }
+    
+    // If it's already a full URL, return it
+    if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
+      return imageUrl;
+    }
+    
+    // If it's a relative path from our API, prepend the API base URL
+    return `http://localhost:5098${imageUrl}`;
+  }
+
+  onImageError(event: Event): void {
+    const img = event.target as HTMLImageElement;
+    img.src = 'https://via.placeholder.com/600x400?text=Image+Not+Found';
+  }
 }

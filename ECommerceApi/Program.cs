@@ -41,6 +41,7 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IImageService, ImageService>();
 
 // Configure CORS
 builder.Services.AddCors(options =>
@@ -69,6 +70,9 @@ if (app.Environment.IsDevelopment())
 
 // Enable CORS
 app.UseCors("AllowAngularApp");
+
+// Enable static files for serving uploaded images
+app.UseStaticFiles();
 
 app.UseHttpsRedirection();
 

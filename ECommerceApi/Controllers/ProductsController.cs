@@ -78,6 +78,30 @@ public class ProductsController : ControllerBase
         }
     }
     
+    [HttpPost("upload")]
+    [Authorize] // Only authenticated users can create products
+    public async Task<IActionResult> CreateProductWithFile([FromForm] CreateProductWithFileDto createProductDto, IFormFile? image)
+    {
+        try
+        {
+            if (image == null || image.Length == 0)
+            {
+                return BadRequest(new { message = "Image file is required" });
+            }
+            
+            var product = await _productService.CreateProductWithFileAsync(createProductDto, image);
+            return CreatedAtAction(nameof(GetProduct), new { id = product.Id }, product);
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { message = "An error occurred while creating product", details = ex.Message });
+        }
+    }
+    
     [HttpPut("{id}")]
     [Authorize] // Only authenticated users can update products
     public async Task<IActionResult> UpdateProduct(int id, [FromBody] UpdateProductDto updateProductDto)

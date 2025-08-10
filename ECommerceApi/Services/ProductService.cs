@@ -10,6 +10,7 @@ public interface IProductService
     Task<IEnumerable<ProductDto>> GetAllProductsAsync();
     Task<ProductDto?> GetProductByIdAsync(int id);
     Task<ProductDto> CreateProductAsync(CreateProductDto createProductDto);
+    Task<ProductDto> CreateProductWithFileAsync(CreateProductWithFileDto createProductDto, IFormFile imageFile);
     Task<ProductDto?> UpdateProductAsync(int id, UpdateProductDto updateProductDto);
     Task<bool> DeleteProductAsync(int id);
     Task<IEnumerable<ProductDto>> GetProductsByCategoryAsync(string category);
@@ -18,10 +19,12 @@ public interface IProductService
 public class ProductService : IProductService
 {
     private readonly ApplicationDbContext _context;
+    private readonly IImageService _imageService;
     
-    public ProductService(ApplicationDbContext context)
+    public ProductService(ApplicationDbContext context, IImageService imageService)
     {
         _context = context;
+        _imageService = imageService;
     }
     
     public async Task<IEnumerable<ProductDto>> GetAllProductsAsync()
@@ -50,6 +53,33 @@ public class ProductService : IProductService
             Price = createProductDto.Price,
             StockQuantity = createProductDto.StockQuantity,
             ImageUrl = createProductDto.ImageUrl,
+            Category = createProductDto.Category,
+            IsActive = true,
+            CreatedAt = DateTime.UtcNow
+        };
+        
+        _context.Products.Add(product);
+        await _context.SaveChangesAsync();
+        
+        return MapToDto(product);
+    }
+    
+    public async Task<ProductDto> CreateProductWithFileAsync(CreateProductWithFileDto createProductDto, IFormFile imageFile)
+    {
+        // Save the image file
+        string imageUrl = string.Empty;
+        if (imageFile != null && imageFile.Length > 0)
+        {
+            imageUrl = await _imageService.SaveImageAsync(imageFile);
+        }
+        
+        var product = new Product
+        {
+            Name = createProductDto.Name,
+            Description = createProductDto.Description,
+            Price = createProductDto.Price,
+            StockQuantity = createProductDto.StockQuantity,
+            ImageUrl = imageUrl,
             Category = createProductDto.Category,
             IsActive = true,
             CreatedAt = DateTime.UtcNow
