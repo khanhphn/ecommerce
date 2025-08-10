@@ -1,0 +1,16 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Build and Run E-Commerce Application",
+			"type": "shell",
+			"command": "echo",
+			"args": [
+				"Starting E-Commerce Application..."
+			],
+			"group": "build",
+			"isBackground": false,
+			"problemMatcher": []
+		}
+	]
+}

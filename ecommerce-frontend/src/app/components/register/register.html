@@ -1,0 +1,117 @@
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6 col-lg-4">
+      <div class="card shadow">
+        <div class="card-body">
+          <h2 class="text-center mb-4">Create Account</h2>
+          
+          <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+            <div class="mb-3">
+              <label for="name" class="form-label">Full Name *</label>
+              <input 
+                type="text" 
+                class="form-control" 
+                id="name" 
+                formControlName="name"
+                [class.is-invalid]="isFieldInvalid('name')"
+                placeholder="Enter your full name">
+              <div class="invalid-feedback">
+                @if (registerForm.get('name')?.errors?.['required']) {
+                  Full name is required
+                }
+                @if (registerForm.get('name')?.errors?.['minlength']) {
+                  Name must be at least 2 characters long
+                }
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="email" class="form-label">Email *</label>
+              <input 
+                type="email" 
+                class="form-control" 
+                id="email" 
+                formControlName="email"
+                [class.is-invalid]="isFieldInvalid('email')"
+                placeholder="Enter your email">
+              <div class="invalid-feedback">
+                @if (registerForm.get('email')?.errors?.['required']) {
+                  Email is required
+                }
+                @if (registerForm.get('email')?.errors?.['email']) {
+                  Please enter a valid email address
+                }
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="password" class="form-label">Password *</label>
+              <input 
+                type="password" 
+                class="form-control" 
+                id="password" 
+                formControlName="password"
+                [class.is-invalid]="isFieldInvalid('password')"
+                placeholder="Enter your password">
+              <div class="invalid-feedback">
+                @if (registerForm.get('password')?.errors?.['required']) {
+                  Password is required
+                }
+                @if (registerForm.get('password')?.errors?.['minlength']) {
+                  Password must be at least 6 characters long
+                }
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="confirmPassword" class="form-label">Confirm Password *</label>
+              <input 
+                type="password" 
+                class="form-control" 
+                id="confirmPassword" 
+                formControlName="confirmPassword"
+                [class.is-invalid]="isFieldInvalid('confirmPassword')"
+                placeholder="Confirm your password">
+              <div class="invalid-feedback">
+                @if (registerForm.get('confirmPassword')?.errors?.['required']) {
+                  Please confirm your password
+                }
+                @if (registerForm.errors?.['passwordMismatch']) {
+                  Passwords do not match
+                }
+              </div>
+            </div>
+
+            @if (errorMessage) {
+              <div class="alert alert-danger">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                {{ errorMessage }}
+              </div>
+            }
+
+            <div class="d-grid mb-3">
+              <button 
+                type="submit" 
+                class="btn btn-primary"
+                [disabled]="registerForm.invalid || loading">
+                @if (loading) {
+                  <span class="spinner-border spinner-border-sm me-2"></span>
+                  Creating Account...
+                } @else {
+                  <i class="fas fa-user-plus me-2"></i>
+                  Create Account
+                }
+              </button>
+            </div>
+
+            <div class="text-center">
+              <p class="mb-0">Already have an account? 
+                <a routerLink="/login" class="text-decoration-none">Sign in here</a>
+              </p>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

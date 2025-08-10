@@ -1,0 +1,32 @@
+.product-info {
+  padding: 2rem;
+}
+
+.price-section h2 {
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.stock-info {
+  font-size: 1.1rem;
+}
+
+.actions .btn {
+  min-width: 200px;
+}
+
+img {
+  max-height: 500px;
+  object-fit: cover;
+}
+
+@media (max-width: 768px) {
+  .product-info {
+    padding: 1rem 0;
+  }
+  
+  .actions .btn {
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+}

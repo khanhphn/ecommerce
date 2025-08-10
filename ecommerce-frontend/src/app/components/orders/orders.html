@@ -1,0 +1,130 @@
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-12">
+      <h2>My Orders</h2>
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a routerLink="/">Home</a></li>
+          <li class="breadcrumb-item active">Orders</li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+
+  @if (loading) {
+    <div class="row">
+      <div class="col-12 text-center">
+        <div class="spinner-border" aria-label="Loading">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-2">Loading your orders...</p>
+      </div>
+    </div>
+  } @else if (error) {
+    <div class="row">
+      <div class="col-12">
+        <div class="alert alert-warning">
+          <i class="fas fa-exclamation-triangle me-2"></i>
+          <strong>{{ error }}</strong>
+          <div class="mt-2">
+            @if (error.includes('log in')) {
+              <a routerLink="/login" class="btn btn-primary">Log In</a>
+            } @else {
+              <button class="btn btn-outline-primary" (click)="loadOrders()">Try Again</button>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  } @else if (orders.length === 0) {
+    <div class="row">
+      <div class="col-12 text-center">
+        <div class="alert alert-info">
+          <i class="fas fa-shopping-bag fa-3x mb-3"></i>
+          <h4>No Orders Found</h4>
+          <p>You haven't placed any orders yet.</p>
+          <a routerLink="/products" class="btn btn-primary">Start Shopping</a>
+        </div>
+      </div>
+    </div>
+  } @else {
+    <div class="row">
+      @for (order of orders; track order.id) {
+        <div class="col-12 mb-4">
+          <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <div>
+                <h5 class="mb-0">Order #{{ order.id }}</h5>
+                <small class="text-muted">Placed on {{ order.createdAt | date:'medium' }}</small>
+              </div>
+              <div>
+                <span class="badge" [ngClass]="getStatusBadgeClass(order.status)">
+                  {{ order.status | titlecase }}
+                </span>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-8">
+                  <h6>Items Ordered:</h6>
+                  @for (item of order.orderItems; track item.id) {
+                    <div class="d-flex justify-content-between align-items-center border-bottom py-2">
+                      <div>
+                        <span class="fw-bold">{{ item.productName }}</span>
+                        <small class="text-muted d-block">Qty: {{ item.quantity }} × ${{ item.unitPrice.toFixed(2) }}</small>
+                      </div>
+                      <span class="fw-bold">${{ item.totalPrice.toFixed(2) }}</span>
+                    </div>
+                  }
+                </div>
+                <div class="col-md-4">
+                  <div class="card bg-light">
+                    <div class="card-body">
+                      <h6>Order Summary</h6>
+                      <div class="d-flex justify-content-between">
+                        <span>Total Amount:</span>
+                        <strong class="text-primary">${{ order.totalAmount.toFixed(2) }}</strong>
+                      </div>
+                      <hr>
+                      <div class="small text-muted">
+                        <strong>Shipping Address:</strong><br>
+                        {{ order.shippingAddress }}
+                      </div>
+                      @if (order.shippedAt) {
+                        <div class="small text-muted mt-2">
+                          <strong>Shipped:</strong> {{ order.shippedAt | date:'medium' }}
+                        </div>
+                      }
+                      @if (order.deliveredAt) {
+                        <div class="small text-muted mt-1">
+                          <strong>Delivered:</strong> {{ order.deliveredAt | date:'medium' }}
+                        </div>
+                      }
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card-footer">
+              <div class="d-flex gap-2">
+                <button class="btn btn-outline-primary btn-sm" (click)="viewOrderDetails(order.id)">
+                  <i class="fas fa-eye me-1"></i>View Details
+                </button>
+                @if (order.status === 'pending') {
+                  <button class="btn btn-outline-danger btn-sm" (click)="cancelOrder(order.id)">
+                    <i class="fas fa-times me-1"></i>Cancel Order
+                  </button>
+                }
+                @if (order.status === 'delivered') {
+                  <button class="btn btn-outline-secondary btn-sm">
+                    <i class="fas fa-redo me-1"></i>Reorder
+                  </button>
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>
